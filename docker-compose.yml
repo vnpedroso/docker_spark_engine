@@ -1,0 +1,43 @@
+version: '2'
+
+services:
+  spark: #to create the master node and its main configs
+    image: docker.io/bitnami/spark:3
+    environment:
+      - SPARK_MODE=master #MASTER NODE
+      - SPARK_RCP_AUTHENTICATION_ENABLED=no #set to true if you want remote procedures authenticated
+      - SPARK_RPC_ENCRYPTION_ENABLED=no #set to true if you want remote procedured encrypted
+      - SPARK_LOCAL_STORAGE_ENCRYPION_ENABLED=no
+      - SPARK_SSL_ENABLED=no #set to true to secure internet communications between systems
+
+                    # SSL PARAMETERS
+      #- SPARK_SSL_KEY_PASSWORD=<key_password>
+      #- SPARK_SSL_KEYSTORE_PASSWORD=<keystore_password>
+      #- SPARK_SSL_TRUSTSTORE_PASSWORD=TRUSTSTORE_PASSWORD
+      #- SPARK_SSL_NEED_CLIENT_AUTH=yes
+      #- SPARK_SSL_PROTOCOL=TLSv1.2
+
+    ports: #selecting the ports to the application
+      - '8080:8080'
+
+    volumes: #adding persistence to the container by choosing a folder
+      - ".:/test-files:rw"
+
+  spark-worker: #to create worker nodes and its main configs
+    image: docker.io/bitnami/spark:3
+    environment:
+      - SPARK_MODE=worker #WORKER NODE
+      - SPARK_MASTER_URL=spark://spark:7077
+      - SPARK_WORKER_MEMORY=500GB
+      - SPARK_WORKER_CORES=1
+      - SPARK_RCP_AUTHENTICATION_ENABLED=no 
+      - SPARK_RPC_ENCRYPTION_ENABLED=no 
+      - SPARK_LOCAL_STORAGE_ENCRYPION_ENABLED=no
+      - SPARK_SSL_ENABLED=no 
+
+                    # SSL PARAMETERS
+      #- SPARK_SSL_KEY_PASSWORD=<key_password>
+      #- SPARK_SSL_KEYSTORE_PASSWORD=<keystore_password>
+      #- SPARK_SSL_TRUSTSTORE_PASSWORD=TRUSTSTORE_PASSWORD
+      #- SPARK_SSL_NEED_CLIENT_AUTH=yes
+      #- SPARK_SSL_PROTOCOL=TLSv1.2
